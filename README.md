@@ -94,16 +94,19 @@ Resuelva todas las consultas utilizando la sintaxis de `SQL1` y `SQL2`. Las cons
 11. Devuelve un listado de las diferentes gamas de producto que ha comprado cada cliente.
 
     ```SQL
-    SELECT c.codigo_cliente, c.nombre_cliente,
-    GROUP_CONCAT(DISTINCT pro.gama SEPARATOR ', ') AS gamas_producto
+    SELECT c.codigo_cliente, c.nombre_cliente, GROUP_CONCAT(DISTINCT pro.gama SEPARATOR ', ') AS gamas_producto 
     FROM cliente c
     JOIN pedido pe ON pe.codigo_cliente = c.codigo_cliente
     JOIN detalle_pedido dp ON dp.codigo_pedido = pe.codigo_pedido
     JOIN pago pag ON pag.codigo_cliente = c.codigo_cliente
     JOIN producto pro ON dp.codigo_producto = pro.codigo_producto
-    GROUP BY c.nombre_cliente
+    GROUP BY c.codigo_cliente
     ORDER BY c.codigo_cliente;
     ```
+
+## Modelo Fisico
+
+![](modelo-fisico.png)
 
 ## Uso del Proyecto
 
