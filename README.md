@@ -523,29 +523,30 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
 1. Devuelve un listado que muestre solamente los clientes que no han realizado ningún pago.
 
     ```SQL
-    SELECT * FROM cliente WHERE EXISTS (
-        SELECT * FROM cliente c
-        LEFT JOIN pago p ON c.codigo_cliente = p.codigo_cliente
-        WHERE p.codigo_cliente IS NULL AND c.codigo_cliente = cliente.codigo_cliente);
+    SELECT * FROM cliente c WHERE NOT EXISTS (
+        SELECT codigo_cliente FROM pago p WHERE p.codigo_cliente = c.codigo_cliente);
     ```
 
 2. Devuelve un listado que muestre solamente los clientes que sí han realizado algún pago.
 
     ```SQL
-    SELECT * FROM cliente WHERE EXISTS (
-        SELECT c.codigo_cliente FROM cliente c
-        JOIN pago p ON c.codigo_cliente = p.codigo_cliente
-        WHERE c.codigo_cliente = cliente.codigo_cliente);
+    SELECT * FROM cliente c WHERE EXISTS (
+        SELECT codigo_cliente FROM pago p WHERE p.codigo_cliente = c.codigo_cliente);
     ```
 
 3. Devuelve un listado de los productos que nunca han aparecido en un pedido.
 
     ```SQL
-    
+    SELECT * FROM producto pd WHERE NOT EXISTS (
+        SELECT * FROM detalle_pedido dp WHERE dp.codigo_producto = pd.codigo_producto);
     ```
 
 4. Devuelve un listado de los productos que han aparecido en un pedido alguna vez.
 
+    ```SQL
+    SELECT * FROM producto pd WHERE EXISTS (
+        SELECT * FROM detalle_pedido dp WHERE dp.codigo_producto = pd.codigo_producto);
+    ```
 
 ## Modelo Fisico
 
