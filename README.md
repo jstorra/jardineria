@@ -548,6 +548,176 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
         SELECT * FROM detalle_pedido dp WHERE dp.codigo_producto = pd.codigo_producto);
     ```
 
+## VIDEO: 5 TIPS GROUP BY
+
+1. Devuelve el nombre, gama y la cantidad de productos que existen de cada gama.
+
+    ```SQL
+    SELECT p.nombre, p.gama, COUNT(*) Total FROM producto p
+    JOIN gama_producto g ON p.gama = g.gama
+    GROUP BY p.nombre, p.gama;
+    ```
+
+2. Devuelve el nombre, gama y la cantidad de productos que existen de cada gama mientras la cantidad sea mayor a **3**.
+
+    ```SQL
+    SELECT p.nombre, p.gama, COUNT(*) Total
+    FROM producto p
+    JOIN gama_producto g ON p.gama = g.gama
+    GROUP BY p.nombre, p.gama
+    HAVING COUNT(*) > 3;
+    ```
+
+3. Devuelve la cantidad de productos que existen por la primera letra del nombre del producto.
+
+    ```SQL
+    SELECT SUBSTRING(p.nombre, 1, 1) productoLetra, COUNT(*) Total
+    FROM producto p
+    GROUP BY SUBSTRING(p.nombre, 1, 1);
+    ```
+
+4. Devuelve un listado con el nombre de todos los productos y ademas todos los precios.
+
+    ```SQL
+    SELECT DISTINCT CONCAT('Producto: ',nombre) ProductosYPrecios FROM producto
+    UNION ALL
+    SELECT DISTINCT CONCAT('Precio: $',precio_venta) FROM producto;
+    ```
+
+5. Devuelve un listado con el nombre de todos los productos, todos los precios y la cantidad que existe de cada uno.
+
+    ```SQL
+    SELECT ProductosYPrecios, COUNT(*) Total
+    FROM
+        (SELECT CONCAT('Producto: ',nombre) ProductosYPrecios FROM producto
+        UNION ALL
+        SELECT CONCAT('Precio: $',precio_venta) FROM producto) as newTable
+    GROUP BY ProductosYPrecios;
+    ```
+
+## VIDEO: 5 TIPS WHERE
+
+1. Devuelve un listado de las gamas que no han aparecen en ningun producto.
+
+    ```SQL
+    SELECT g.* FROM gama_producto g
+    WHERE g.gama NOT IN (
+        SELECT p.gama FROM producto p
+        WHERE g.gama = p.gama
+    );
+    ```
+
+2. Devuelve un listado de las gamas que aparecen en algun producto.
+
+    ```SQL
+    SELECT * FROM gama_producto g
+    WHERE (
+        SELECT COUNT(*)
+        FROM producto p
+        WHERE g.gama = p.gama
+    ) > 0;
+    ```
+
+3. Devuelve un listado con los productos que comiencen por la letra **A** ó **C**.
+
+    ```SQL
+    SELECT * FROM producto
+    WHERE nombre RLIKE '^[AC]' ORDER BY nombre;
+    ```
+
+4. Devuelve un listado de las gamas que aparecen en algun producto y que el nombre del producto finaliza con la letra **M**.
+
+    ```SQL
+    SELECT g.* FROM gama_producto g
+    WHERE g.gama IN (
+        SELECT p.gama FROM producto p
+        WHERE p.nombre LIKE '%M'
+    );
+    ```
+
+5. Devuelve un listado de los productos que su nombre comienza con la letra **H**.
+
+    ```SQL
+    SELECT * FROM producto
+    WHERE SUBSTRING(nombre, 1, 1) = 'H';
+    ```
+
+## VIDEO: 5 TIPS UPDATE
+
+1. Actualiza los registros de la tabla `pagos` en su campo **total** y agregale **$1**.
+
+    ```SQL
+    UPDATE pago SET total = total + 1;
+    ```
+
+2. Actualiza las formas de pago de la tabla `pagos` a su estado por defecto.
+
+    ```SQL
+    UPDATE pago SET forma_pago = DEFAULT;
+    ```
+
+3. Actualiza los registros de gama en la tabla `pagos` para que se muestre la gama y la descripción correspondiente de esa gama.
+
+    ```SQL
+    UPDATE producto p SET gama = (
+        SELECT CONCAT(p.gama,' ',g.descripcion_texto)
+        FROM gama_producto g
+        WHERE p.gama = g.gama
+    );
+    ```
+
+4. Actualiza el nombre de los productos a `Actualizado` sí su gama contiene letras **O**.
+
+    ```SQL
+    UPDATE producto p SET nombre = 'Actualizado'
+    WHERE p.gama IN (
+        SELECT g.gama FROM gama_producto
+        WHERE g.gama LIKE '%o%'
+    );
+    ```
+
+5. Actualiza la tabla `productos` para que los clientes tambien sean los proveedores.
+
+    ```SQL
+    UPDATE producto p
+    JOIN detalle_pedido dp ON p.codigo_producto = dp.codigo_producto
+    JOIN pedido pe ON dp.codigo_pedido = pe.codigo_pedido
+    JOIN cliente c ON pe.codigo_cliente = c.codigo_cliente
+    SET p.proveedor = c.nombre_cliente;
+    ```
+
+## VIDEO: 5 TIPS SELECT
+
+1. 
+
+    ```SQL
+
+    ```
+
+2. 
+
+    ```SQL
+
+    ```
+
+3. 
+
+    ```SQL
+
+    ```
+
+4. 
+
+    ```SQL
+
+    ```
+
+5. 
+
+    ```SQL
+
+    ```
+
 ## Modelo Fisico
 
 ![](modelo-fisico.png)
