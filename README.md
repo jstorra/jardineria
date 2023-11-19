@@ -12,7 +12,7 @@ Resuelva todas las consultas utilizando la sintaxis de `SQL1` y `SQL2`. Las cons
     JOIN empleado e ON c.codigo_empleado_rep_ventas = e.codigo_empleado;
     ```
 
-2. Muestra el nombre de los clientes que hayan realizado pagos junto con el nombre de sus representantes de ventas.
+2. Muestra el **nombre** de los clientes que hayan realizado pagos junto con el nombre de sus representantes de ventas.
 
     ```SQL
     SELECT DISTINCT c.nombre_cliente, e.nombre AS nombre_representante FROM cliente c
@@ -221,7 +221,7 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
     WHERE c.codigo_empleado_rep_ventas IS NULL;
     ```
 
-# 1.4.7 Consultas
+# 1.4.7 Consultas resumen
 
 1. Devuelve un listado con el código de oficina y la ciudad donde hay oficinas.
 
@@ -524,14 +524,14 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
 
     ```SQL
     SELECT * FROM cliente c WHERE NOT EXISTS (
-        SELECT codigo_cliente FROM pago p WHERE p.codigo_cliente = c.codigo_cliente);
+        SELECT * FROM pago p WHERE p.codigo_cliente = c.codigo_cliente);
     ```
 
 2. Devuelve un listado que muestre solamente los clientes que sí han realizado algún pago.
 
     ```SQL
     SELECT * FROM cliente c WHERE EXISTS (
-        SELECT codigo_cliente FROM pago p WHERE p.codigo_cliente = c.codigo_cliente);
+        SELECT * FROM pago p WHERE p.codigo_cliente = c.codigo_cliente);
     ```
 
 3. Devuelve un listado de los productos que nunca han aparecido en un pedido.
@@ -550,25 +550,25 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
 
 ## VIDEO: 5 TIPS GROUP BY
 
-1. Devuelve el nombre, gama y la cantidad de productos que existen de cada gama.
+1. Devuelve el **nombre**, **gama** y la **cantidad** de productos que existen de cada gama.
 
     ```SQL
-    SELECT p.nombre, p.gama, COUNT(*) Total FROM producto p
+    SELECT p.nombre, p.gama, COUNT(*) AS cantidad FROM producto p
     JOIN gama_producto g ON p.gama = g.gama
     GROUP BY p.nombre, p.gama;
     ```
 
-2. Devuelve el nombre, gama y la cantidad de productos que existen de cada gama mientras la cantidad sea mayor a **3**.
+2. Devuelve el **nombre**, **gama** y la **cantidad** de productos que existen de cada gama mientras la cantidad sea mayor a **3**.
 
     ```SQL
-    SELECT p.nombre, p.gama, COUNT(*) Total
+    SELECT p.nombre, p.gama, COUNT(*) AS cantidad
     FROM producto p
     JOIN gama_producto g ON p.gama = g.gama
     GROUP BY p.nombre, p.gama
     HAVING COUNT(*) > 3;
     ```
 
-3. Devuelve la cantidad de productos que existen por la primera letra del nombre del producto.
+3. Devuelve la **cantidad** de productos que existen por la primera letra del nombre del producto.
 
     ```SQL
     SELECT SUBSTRING(p.nombre, 1, 1) productoLetra, COUNT(*) Total
@@ -576,7 +576,7 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
     GROUP BY SUBSTRING(p.nombre, 1, 1);
     ```
 
-4. Devuelve un listado con el nombre de todos los productos y ademas todos los precios.
+4. Devuelve un listado con el **nombre** de todos los productos y ademas todos los **precios**.
 
     ```SQL
     SELECT DISTINCT CONCAT('Producto: ',nombre) ProductosYPrecios FROM producto
@@ -584,7 +584,7 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
     SELECT DISTINCT CONCAT('Precio: $',precio_venta) FROM producto;
     ```
 
-5. Devuelve un listado con el nombre de todos los productos, todos los precios y la cantidad que existe de cada uno.
+5. Devuelve un listado con el **nombre** de todos los productos, todos los **precios** y la **cantidad** que existe de cada uno.
 
     ```SQL
     SELECT ProductosYPrecios, COUNT(*) Total
@@ -635,7 +635,7 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
     );
     ```
 
-5. Devuelve un listado de los productos que su nombre comienza con la letra **H**.
+5. Devuelve un listado de los productos que su **nombre** comienza con la letra **H**.
 
     ```SQL
     SELECT * FROM producto
@@ -650,13 +650,13 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
     UPDATE pago SET total = total + 1;
     ```
 
-2. Actualiza las formas de pago de la tabla `pagos` a su estado por defecto.
+2. Actualiza las **formas de pago** de la tabla `pagos` a su estado por defecto.
 
     ```SQL
     UPDATE pago SET forma_pago = DEFAULT;
     ```
 
-3. Actualiza los registros de gama en la tabla `pagos` para que se muestre la gama y la descripción correspondiente de esa gama.
+3. Actualiza los registros de gama en la tabla `pagos` para que se muestre la **gama** y la **descripción** correspondiente de esa gama.
 
     ```SQL
     UPDATE producto p SET gama = (
@@ -666,7 +666,7 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
     );
     ```
 
-4. Actualiza el nombre de los productos a `Actualizado` sí su gama contiene letras **O**.
+4. Actualiza el **nombre** de los productos a `Actualizado` sí su gama contiene letras **O**.
 
     ```SQL
     UPDATE producto p SET nombre = 'Actualizado'
@@ -688,34 +688,71 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
 
 ## VIDEO: 5 TIPS SELECT
 
-1. 
+1. Crear una copia de datos de la tabla `gama_producto` y agregarle un nuevo campo `status` con el valor `Comprobado`.
 
     ```SQL
-
+    DROP TABLE IF EXISTS OTHER_TABLE;
+    CREATE TABLE OTHER_TABLE(
+        gama VARCHAR(50),
+        descripcion_texto TEXT,
+        descripcion_html TEXT,
+        imagen VARCHAR(256),
+        status VARCHAR(20)
+    );
+    INSERT INTO OTHER_TABLE (gama, descripcion_texto, descripcion_html, imagen, status)
+    SELECT gama, descripcion_texto, descripcion_html, imagen, 'Comprobado' AS status
+    FROM gama_producto;
     ```
 
-2. 
+2. Devuelve un listado del **nombre completo** de los empleados con su **identificador** unico.
 
     ```SQL
-
+    SELECT codigo_empleado,
+	   CONCAT(nombre,' ',apellido1,' ',apellido2) AS empleado_fullname
+    FROM empleado;
     ```
 
-3. 
+3. Devuelve un listado con el **nombre del cliente**, los **pagos realizados** y agrega una columna describiendo en que **categoria** se encuentra el pago sabiendo que sí el pago es inferior a **10000** se considera `Pago bajo`, entre **10000** y **20000** `Pago estable`, y mayores como `Pago alto`.
 
     ```SQL
-
+    SELECT DISTINCT c.nombre_cliente, total,
+    CASE WHEN total < 10000 THEN 'Pago bajo'
+    WHEN total >= 10000 AND total <= 20000 THEN 'Pago estable'
+    ELSE 'Pago alto' END AS categoria_pago FROM pago p
+    JOIN cliente c ON p.codigo_cliente = c.codigo_cliente
+    ORDER BY c.nombre_cliente;
     ```
 
-4. 
+4. Devuelve un listado con el **codigo del cliente**, **nombre del cliente** y la **cantidad de pagos** que ha realizado, ten en cuenta que aquellos clientes que no han realizado pagos tambien deberan aparecer.
 
     ```SQL
-
+    SELECT c.codigo_cliente, c.nombre_cliente, (
+        SELECT COUNT(*) FROM pago p
+        WHERE p.codigo_cliente = c.codigo_cliente
+        ) AS cantidad_pagos
+    FROM cliente c;
     ```
 
-5. 
+5. Devuelve un listado con el **codigo del cliente**, **nombre del cliente** y la **cantidad de pagos** que ha realizado, ten en cuenta que aquellos clientes que no han realizado pagos tambien deberan aparecer.
 
     ```SQL
+    SELECT codigo_cliente, nombre_cliente, totalPagado
+    FROM (
+        (SELECT c.codigo_cliente, c.nombre_cliente, SUM(p.total) AS totalPagado FROM pago p
+        JOIN cliente c ON p.codigo_cliente = c.codigo_cliente
+        GROUP BY codigo_cliente) AS subTable
+    ) WHERE totalPagado > 6000;
+    ```
 
+6. Devuelve un listado con un **id virtual**, **codigo del cliente**, **nombre del cliente** y la **cantidad de pagos** que ha realizado, ten en cuenta que aquellos clientes que no han realizado pagos tambien deberan aparecer.
+
+    ```SQL
+    SELECT ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS virtualId, codigo_cliente, nombre_cliente, totalPagado
+    FROM (
+        (SELECT c.codigo_cliente, c.nombre_cliente, SUM(p.total) AS totalPagado FROM pago p
+        JOIN cliente c ON p.codigo_cliente = c.codigo_cliente
+        GROUP BY codigo_cliente) AS subTable
+    ) WHERE totalPagado > 6000;
     ```
 
 ## Modelo Fisico
