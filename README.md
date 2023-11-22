@@ -733,26 +733,26 @@ Resuelva todas las consultas utilizando las cláusulas LEFT JOIN, RIGHT JOIN, NA
     FROM cliente c;
     ```
 
-5. Devuelve un listado con el **codigo del cliente**, **nombre del cliente** y la **cantidad de pagos** que ha realizado, ten en cuenta que aquellos clientes que no han realizado pagos tambien deberan aparecer.
+5. Devuelve un listado con el **codigo del cliente**, **nombre del cliente** y la **suma de pagos** que ha realizado, ten en cuenta que aquellos clientes que no han realizado pagos tambien deberan aparecer.
 
     ```SQL
-    SELECT codigo_cliente, nombre_cliente, totalPagado
+    SELECT codigo_cliente, nombre_cliente, IFNULL(totalPagado, "No hay pago") as totalPagado
     FROM (
-        (SELECT c.codigo_cliente, c.nombre_cliente, SUM(p.total) AS totalPagado FROM pago p
-        JOIN cliente c ON p.codigo_cliente = c.codigo_cliente
-        GROUP BY codigo_cliente) AS subTable
-    ) WHERE totalPagado > 6000;
+        SELECT c.codigo_cliente, c.nombre_cliente, SUM(p.total) AS totalPagado FROM pago p
+        RIGHT JOIN cliente c ON p.codigo_cliente = c.codigo_cliente
+        GROUP BY codigo_cliente
+    ) AS subTable;
     ```
 
-6. Devuelve un listado con un **id virtual**, **codigo del cliente**, **nombre del cliente** y la **cantidad de pagos** que ha realizado, ten en cuenta que aquellos clientes que no han realizado pagos tambien deberan aparecer.
+6. Devuelve un listado con un **id virtual**, **codigo del cliente**, **nombre del cliente** y la **suma de pagos** que ha realizado, ten en cuenta que aquellos clientes que no han realizado pagos tambien deberan aparecer.
 
     ```SQL
     SELECT ROW_NUMBER() OVER (ORDER BY (SELECT 1)) AS virtualId, codigo_cliente, nombre_cliente, totalPagado
     FROM (
-        (SELECT c.codigo_cliente, c.nombre_cliente, SUM(p.total) AS totalPagado FROM pago p
-        JOIN cliente c ON p.codigo_cliente = c.codigo_cliente
-        GROUP BY codigo_cliente) AS subTable
-    ) WHERE totalPagado > 6000;
+        SELECT c.codigo_cliente, c.nombre_cliente, SUM(p.total) AS totalPagado FROM pago p
+        RIGHT JOIN cliente c ON p.codigo_cliente = c.codigo_cliente
+        GROUP BY codigo_cliente
+    ) AS subTable;
     ```
 
 ## Modelo Fisico
